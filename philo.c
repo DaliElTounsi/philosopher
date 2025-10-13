@@ -1,150 +1,107 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohchams <mohchams@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/12 18:10:43 by mohchams          #+#    #+#             */
+/*   Updated: 2025/10/13 00:00:00 by mohchams         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void init_table(t_table *table)
+int	parse_args(t_table *table, int ac, char **av)
 {
-    int i;
-
-    i = 0;
-    table->forks = malloc(sizeof(pthread_mutex_t) * table->nb_philo);
-    table->threads = malloc(sizeof(pthread_t) * table->nb_philo);
-    if (!table->forks || !table->threads)
-    {
-        free(table->forks);
-        free(table->threads);
-        return;
-    }
-    while (i < table->nb_philo)
-    {
-        pthread_mutex_init(&table->forks[i], NULL);
-        i++;
-    }
+	table->nb_philo = atoi(av[1]);
+	table->time_to_die = atoi(av[2]);
+	table->time_to_eat = atoi(av[3]);
+	table->time_to_sleep = atoi(av[4]);
+	if (table->nb_philo <= 0 || table->time_to_die <= 0
+		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
+		return (1);
+	if (ac == 6)
+	{
+		table->nb_meals_required = atoi(av[5]);
+		if (table->nb_meals_required <= 0)
+			return (1);
+	}
+	else
+		table->nb_meals_required = -1;
+	return (0);
 }
 
-void init_threads(t_table *table)
+void	init_forks(t_table *table)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < table->nb_philo)
-    {
-        pthread_create(&table->threads[i], NULL, philosopher_routine, NULL);
-        i++;
-    }
+	i = 0;
+	table->forks = malloc(sizeof(pthread_mutex_t) * table->nb_philo);
+	if (!table->forks)
+		return ;
+	while (i < table->nb_philo)
+	{
+		pthread_mutex_init(&table->forks[i], NULL);
+		i++;
+	}
 }
 
-void print_log(t_philo *philo, char *state)
+void	init_philos(t_table *table)
 {
-    struct timeval current_time;
-    long timestamp_ms;
+	int	i;
 
-    pthread_mutex_lock(philo->table->log_mutex);
-    gettimeofday(&current_time, NULL);
-    timestamp_ms = (current_time.tv_sec - philo->table->start_time.tv_sec) * 1000 +
-                   (current_time.tv_usec - philo->table->start_time.tv_usec) / 1000;
-    printf("%ld %d %s\n", timestamp_ms, philo->ID, state);
-    pthread_mutex_unlock(philo->table->log_mutex);
+	i = 0;
+	table->philos = malloc(sizeof(t_philo) * table->nb_philo);
+	if (!table->philos)
+		return ;
+	while (i < table->nb_philo)
+	{
+		table->philos[i].id = i + 1;
+		table->philos[i].table = table;
+		table->philos[i].left_fork_id = i;
+		table->philos[i].right_fork_id = (i + 1) % table->nb_philo;
+		table->philos[i].left_fork = &table->forks[i];
+		table->philos[i].right_fork = &table->forks[(i + 1) % table->nb_philo];
+		table->philos[i].meals_eaten = 0;
+		table->philos[i].meal_mutex = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(table->philos[i].meal_mutex, NULL);
+		gettimeofday(&table->philos[i].time_last_eat, NULL);
+		i++;
+	}
 }
 
-int parse_args(t_table *table, int ac, char **av)
+void	init_table(t_table *table)
 {
-    int i;
-    int *values[4];
-
-    values[0] = &table->nb_philo;
-    values[1] = &table->time_to_die;
-    values[2] = &table->time_to_eat;
-    values[3] = &table->time_to_sleep;
-
-    i = 0;
-    while (i < 4)
-    {
-        *values[i] = atoi(av[i + 1]);
-        if (*values[i] <= 0)
-        {
-            free(table);
-            return (1);
-        }
-        i++;
-    }
-    if (ac == 6)
-    {
-        table->nb_meals_required = atoi(av[5]);
-        if (table->nb_meals_required <= 0)
-        {
-            free(table);
-            return (1);
-        }
-    }
-    else
-    {
-        table->nb_meals_required = -1;
-    }
-    return (0);
+	table->threads = malloc(sizeof(pthread_t) * table->nb_philo);
+	table->log_mutex = malloc(sizeof(pthread_mutex_t));
+	table->death_mutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->threads || !table->log_mutex || !table->death_mutex)
+		return ;
+	pthread_mutex_init(table->log_mutex, NULL);
+	pthread_mutex_init(table->death_mutex, NULL);
+	table->someone_died = 0;
+	gettimeofday(&table->start_time, NULL);
+	init_forks(table);
+	init_philos(table);
 }
 
-void wait_for_threads(t_table *table)
+int	main(int ac, char **av)
 {
-    int i;
+	t_table	*table;
 
-    i = 0;
-    while (i < table->nb_philo)
-    {
-        pthread_detach(table->threads[i]);
-        i++;
-    }
-}
-
-void destroy_mutexes(t_table *table)
-{
-    int i;
-
-    i = 0;
-    while (i < table->nb_philo)
-    {
-        pthread_mutex_destroy(&table->forks[i]);
-        i++;
-    }
-}
-
-int main(int ac, char **av)
-{
-    t_table *table;
-    int i;
-
-    if (ac != 5 && ac != 6)
-        return (1);
-    table = malloc(sizeof(t_table));
-    if (!table)
-        return (1);
-    if (parse_args(table, ac, av) != 0)
-        return (1);
-    table->philos = malloc(sizeof(t_philo) * table->nb_philo);
-    if (!table->philos)
-    {
-        free(table);
-        return (1);
-    }
-    i = 0;
-    while (i < table->nb_philo)
-    {
-        table->philos[i].ID = i + 1;
-        table->philos[i].table = table;
-        table->philos[i].left_fork = &table->forks[i];
-        table->philos[i].right_fork = &table->forks[(i + 1) % table->nb_philo];
-        i++;
-    }
-    gettimeofday(&table->start_time, NULL);
-    table->log_mutex = malloc(sizeof(pthread_mutex_t));
-    pthread_mutex_init(table->log_mutex, NULL);
-    init_table(table);
-    init_threads(table);
-    wait_for_threads(table);
-    destroy_mutexes(table);
-    free(table->forks);
-    free(table->threads);
-    pthread_mutex_destroy(table->log_mutex);
-    free(table->log_mutex);
-    free(table->philos);
-    free(table);
-    return (0);
+	if (ac != 5 && ac != 6)
+		return (1);
+	table = malloc(sizeof(t_table));
+	if (!table)
+		return (1);
+	if (parse_args(table, ac, av) != 0)
+	{
+		free(table);
+		return (1);
+	}
+	init_table(table);
+	start_simulation(table);
+	cleanup(table);
+	return (0);
 }
