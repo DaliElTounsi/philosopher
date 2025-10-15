@@ -6,7 +6,7 @@
 /*   By: mohchams <mohchams@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 00:00:00 by mohchams          #+#    #+#             */
-/*   Updated: 2025/10/13 00:00:00 by mohchams         ###   ########.fr       */
+/*   Updated: 2025/10/15 17:33:41 by mohchams         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,27 @@ void	print_log(t_philo *philo, char *state)
 	pthread_mutex_unlock(philo->table->log_mutex);
 }
 
+
+void break_usleep(int time)
+{
+	int clock;
+
+	clock = get_time_en millisecond + time
+	while (get_time en millisecond < clock)
+	{
+		if (philo died has died)
+			break;
+		usleep (100);//casser mon you sleep pour verifer si un philossoph est mort
+	}
+}
+
 void	start_simulation(t_table *table)
 {
 	int	i;
 
 	i = 0;
+
+	
 	while (i < table->nb_philo)
 	{
 		pthread_create(&table->threads[i], NULL,
