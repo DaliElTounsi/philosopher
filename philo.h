@@ -54,12 +54,14 @@ typedef struct s_philo
 	t_table			*table;
 }	t_philo;
 
+int		ft_atoi(const char *str);
 int		parse_args(t_table *table, int ac, char **av);
 void	init_forks(t_table *table);
 void	init_philos(t_table *table);
 void	init_table(t_table *table);
 long	get_time_diff(struct timeval start, struct timeval end);
 void	print_log(t_philo *philo, char *state);
+void	break_usleep(t_philo *philo, int time_ms);
 void	start_simulation(t_table *table);
 void	cleanup(t_table *table);
 void	destroy_resources(t_table *table);

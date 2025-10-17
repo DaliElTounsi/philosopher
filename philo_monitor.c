@@ -54,7 +54,7 @@ void	*handle_single_philo(t_philo *philo)
 {
 	print_log(philo, "has taken a fork");
 	while (!check_death(philo))
-		usleep(1000);
+		break_usleep(philo, 1);
 	return (NULL);
 }
 

@@ -14,16 +14,16 @@
 
 int	parse_args(t_table *table, int ac, char **av)
 {
-	table->nb_philo = atoi(av[1]);
-	table->time_to_die = atoi(av[2]);
-	table->time_to_eat = atoi(av[3]);
-	table->time_to_sleep = atoi(av[4]);
+	table->nb_philo = ft_atoi(av[1]);
+	table->time_to_die = ft_atoi(av[2]);
+	table->time_to_eat = ft_atoi(av[3]);
+	table->time_to_sleep = ft_atoi(av[4]);
 	if (table->nb_philo <= 0 || table->time_to_die <= 0
 		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
 		return (1);
 	if (ac == 6)
 	{
-		table->nb_meals_required = atoi(av[5]);
+		table->nb_meals_required = ft_atoi(av[5]);
 		if (table->nb_meals_required <= 0)
 			return (1);
 	}

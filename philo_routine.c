@@ -44,7 +44,7 @@ void	philo_eat(t_philo *philo)
 	philo->meals_eaten++;
 	pthread_mutex_unlock(philo->meal_mutex);
 	print_log(philo, "is eating");
-	usleep(philo->table->time_to_eat * 1000);
+	break_usleep(philo, philo->table->time_to_eat);
 	if (philo->left_fork_id < philo->right_fork_id)
 	{
 		first_id = philo->left_fork_id;
@@ -62,7 +62,7 @@ void	philo_eat(t_philo *philo)
 void	philo_sleep(t_philo *philo)
 {
 	print_log(philo, "is sleeping");
-	usleep(philo->table->time_to_sleep * 1000);
+	break_usleep(philo, philo->table->time_to_sleep);
 }
 
 void	philo_think(t_philo *philo)
@@ -72,9 +72,9 @@ void	philo_think(t_philo *philo)
 	print_log(philo, "is thinking");
 	think_time = philo->table->time_to_eat - philo->table->time_to_sleep;
 	if (think_time > 0)
-		usleep(think_time * 1000);
+		break_usleep(philo, think_time);
 	else
-		usleep(1000);
+		break_usleep(philo, 1);
 }
 
 void	*philosopher_routine(void *arg)
@@ -85,7 +85,10 @@ void	*philosopher_routine(void *arg)
 	if (philo->table->nb_philo == 1)
 		return (handle_single_philo(philo));
 	if (philo->id % 2 == 0)
-		usleep(philo->table->time_to_eat * 500);
+	{
+		print_log(philo, "is thinking");
+		break_usleep(philo, philo->table->time_to_eat / 2);
+	}
 	while (!check_death(philo))
 	{
 		if (check_meals_done(philo))
