@@ -1,0 +1,27 @@
+# Fichiers compilés
+*.o
+*.a
+philo
+philo_bonus
+
+# Fichiers de documentation (gardés localement uniquement)
+*.md
+*.pdf
+*.html
+
+# Scripts de génération
+generate_pdf.sh
+open_for_pdf.sh
+
+# Fichiers temporaires et logs
+*.log
+/tmp/
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace

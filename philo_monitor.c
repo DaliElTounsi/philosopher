@@ -72,7 +72,7 @@ void	*death_monitor(void *arg)
 			set_death_flag(table);
 			return (NULL);
 		}
-		usleep(1000);
+		usleep(100);
 	}
 	return (NULL);
 }

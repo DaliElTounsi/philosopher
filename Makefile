@@ -17,6 +17,7 @@ CFLAGS		= -Wall -Wextra -Werror -pthread -g
 RM			= rm -f
 
 SRCS		= philo.c \
+			  philo_parsing.c \
 			  philo_utils.c \
 			  philo_routine.c \
 			  philo_monitor.c \

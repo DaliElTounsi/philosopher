@@ -6,7 +6,7 @@
 /*   By: mohchams <mohchams@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:11:02 by mohchams          #+#    #+#             */
-/*   Updated: 2025/10/12 18:14:15 by mohchams         ###   ########.fr       */
+/*   Updated: 2025/10/17 22:53:32 by mohchams         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,34 +26,35 @@ typedef struct s_philo	t_philo;
 
 typedef struct s_table
 {
-	int				nb_philo;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				nb_meals_required;
-	pthread_mutex_t	*forks;
-	pthread_t		*threads;
-	pthread_t		monitor_thread;
-	struct timeval	start_time;
-	pthread_mutex_t	*log_mutex;
-	pthread_mutex_t	*death_mutex;
-	int				someone_died;
-	t_philo			*philos;
+	int					nb_philo;
+	int					time_to_die;
+	int					time_to_eat;
+	int					time_to_sleep;
+	int					nb_meals_required;
+	pthread_mutex_t		*forks;
+	pthread_t			*threads;
+	pthread_t			monitor_thread;
+	struct timeval		start_time;
+	pthread_mutex_t		*log_mutex;
+	pthread_mutex_t		*death_mutex;
+	int					someone_died;
+	t_philo				*philos;
 }	t_table;
 
 typedef struct s_philo
 {
-	int				id;
-	int				left_fork_id;
-	int				right_fork_id;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	*meal_mutex;
-	struct timeval	time_last_eat;
-	int				meals_eaten;
-	t_table			*table;
+	int					id;
+	int					left_fork_id;
+	int					right_fork_id;
+	pthread_mutex_t		*left_fork;
+	pthread_mutex_t		*right_fork;
+	pthread_mutex_t		*meal_mutex;
+	struct timeval		time_last_eat;
+	int					meals_eaten;
+	t_table				*table;
 }	t_philo;
 
+int		is_valid_number(const char *str);
 int		ft_atoi(const char *str);
 int		parse_args(t_table *table, int ac, char **av);
 void	init_forks(t_table *table);

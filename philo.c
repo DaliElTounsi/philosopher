@@ -14,6 +14,9 @@
 
 int	parse_args(t_table *table, int ac, char **av)
 {
+	if (!is_valid_number(av[1]) || !is_valid_number(av[2])
+		|| !is_valid_number(av[3]) || !is_valid_number(av[4]))
+		return (1);
 	table->nb_philo = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
@@ -23,6 +26,8 @@ int	parse_args(t_table *table, int ac, char **av)
 		return (1);
 	if (ac == 6)
 	{
+		if (!is_valid_number(av[5]))
+			return (1);
 		table->nb_meals_required = ft_atoi(av[5]);
 		if (table->nb_meals_required <= 0)
 			return (1);
