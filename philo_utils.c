@@ -91,16 +91,20 @@ void	break_usleep(t_philo *philo, int time_ms)
 	}
 }
 
-void	start_simulation(t_table *table)
+int	start_simulation(t_table *table)
 {
 	int	i;
 
 	i = 0;
 	while (i < table->nb_philo)
 	{
-		pthread_create(&table->threads[i], NULL,
-			philosopher_routine, &table->philos[i]);
+		if (pthread_create(&table->threads[i], NULL,
+				philosopher_routine, &table->philos[i]) != 0)
+			return (0);
 		i++;
 	}
-	pthread_create(&table->monitor_thread, NULL, death_monitor, table);
+	if (pthread_create(&table->monitor_thread, NULL,
+			death_monitor, table) != 0)
+		return (0);
+	return (1);
 }

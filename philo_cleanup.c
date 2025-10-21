@@ -12,6 +12,42 @@
 
 #include "philo.h"
 
+static void	free_philos(t_table *table)
+{
+	int	i;
+
+	if (table->philos)
+	{
+		i = 0;
+		while (i < table->nb_philo && table->philos[i].meal_mutex)
+		{
+			free(table->philos[i].meal_mutex);
+			i++;
+		}
+		free(table->philos);
+	}
+}
+
+void	error_exit(t_table *table, char *msg)
+{
+	if (msg)
+		write(2, msg, strlen(msg));
+	if (table)
+	{
+		if (table->forks)
+			free(table->forks);
+		free_philos(table);
+		if (table->threads)
+			free(table->threads);
+		if (table->log_mutex)
+			free(table->log_mutex);
+		if (table->death_mutex)
+			free(table->death_mutex);
+		free(table);
+	}
+	exit(1);
+}
+
 void	destroy_resources(t_table *table)
 {
 	int	i;

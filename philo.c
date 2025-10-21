@@ -37,29 +37,30 @@ int	parse_args(t_table *table, int ac, char **av)
 	return (0);
 }
 
-void	init_forks(t_table *table)
+int	init_forks(t_table *table)
 {
 	int	i;
 
 	i = 0;
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->nb_philo);
 	if (!table->forks)
-		return ;
+		return (0);
 	while (i < table->nb_philo)
 	{
 		pthread_mutex_init(&table->forks[i], NULL);
 		i++;
 	}
+	return (1);
 }
 
-void	init_philos(t_table *table)
+int	init_philos(t_table *table)
 {
 	int	i;
 
 	i = 0;
 	table->philos = malloc(sizeof(t_philo) * table->nb_philo);
 	if (!table->philos)
-		return ;
+		return (0);
 	while (i < table->nb_philo)
 	{
 		table->philos[i].id = i + 1;
@@ -70,25 +71,35 @@ void	init_philos(t_table *table)
 		table->philos[i].right_fork = &table->forks[(i + 1) % table->nb_philo];
 		table->philos[i].meals_eaten = 0;
 		table->philos[i].meal_mutex = malloc(sizeof(pthread_mutex_t));
+		if (!table->philos[i].meal_mutex)
+			return (0);
 		pthread_mutex_init(table->philos[i].meal_mutex, NULL);
 		gettimeofday(&table->philos[i].time_last_eat, NULL);
 		i++;
 	}
+	return (1);
 }
 
-void	init_table(t_table *table)
+int	init_table(t_table *table)
 {
 	table->threads = malloc(sizeof(pthread_t) * table->nb_philo);
+	if (!table->threads)
+		return (0);
 	table->log_mutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->log_mutex)
+		return (0);
 	table->death_mutex = malloc(sizeof(pthread_mutex_t));
-	if (!table->threads || !table->log_mutex || !table->death_mutex)
-		return ;
+	if (!table->death_mutex)
+		return (0);
 	pthread_mutex_init(table->log_mutex, NULL);
 	pthread_mutex_init(table->death_mutex, NULL);
 	table->someone_died = 0;
 	gettimeofday(&table->start_time, NULL);
-	init_forks(table);
-	init_philos(table);
+	if (!init_forks(table))
+		return (0);
+	if (!init_philos(table))
+		return (0);
+	return (1);
 }
 
 int	main(int ac, char **av)
@@ -99,14 +110,16 @@ int	main(int ac, char **av)
 		return (1);
 	table = malloc(sizeof(t_table));
 	if (!table)
-		return (1);
+		error_exit(NULL, "Error: malloc failed\n");
 	if (parse_args(table, ac, av) != 0)
 	{
 		free(table);
 		return (1);
 	}
-	init_table(table);
-	start_simulation(table);
+	if (!init_table(table))
+		error_exit(table, "Error: initialization failed\n");
+	if (!start_simulation(table))
+		error_exit(table, "Error: thread creation failed\n");
 	cleanup(table);
 	return (0);
 }
