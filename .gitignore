@@ -20,6 +20,8 @@ open_for_pdf.sh
 *.swp
 *.swo
 *~
+outfile
+infile
 
 # IDE
 .vscode/
