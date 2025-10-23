@@ -110,16 +110,16 @@ int	main(int ac, char **av)
 		return (1);
 	table = malloc(sizeof(t_table));
 	if (!table)
-		error_exit(NULL, "Error: malloc failed\n");
+		return (error_exit(NULL, "Error: malloc failed\n"));
 	if (parse_args(table, ac, av) != 0)
 	{
 		free(table);
 		return (1);
 	}
 	if (!init_table(table))
-		error_exit(table, "Error: initialization failed\n");
+		return (error_exit(table, "Error: initialization failed\n"));
 	if (!start_simulation(table))
-		error_exit(table, "Error: thread creation failed\n");
+		return (error_exit(table, "Error: thread creation failed\n"));
 	cleanup(table);
 	return (0);
 }

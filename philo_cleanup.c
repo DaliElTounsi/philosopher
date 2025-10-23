@@ -28,7 +28,7 @@ static void	free_philos(t_table *table)
 	}
 }
 
-void	error_exit(t_table *table, char *msg)
+int	error_exit(t_table *table, char *msg)
 {
 	if (msg)
 		write(2, msg, strlen(msg));
@@ -45,7 +45,7 @@ void	error_exit(t_table *table, char *msg)
 			free(table->death_mutex);
 		free(table);
 	}
-	exit(1);
+	return (1);
 }
 
 void	destroy_resources(t_table *table)

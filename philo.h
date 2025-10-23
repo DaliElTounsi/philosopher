@@ -60,7 +60,7 @@ int		parse_args(t_table *table, int ac, char **av);
 int		init_forks(t_table *table);
 int		init_philos(t_table *table);
 int		init_table(t_table *table);
-void	error_exit(t_table *table, char *msg);
+int		error_exit(t_table *table, char *msg);
 long	get_time_diff(struct timeval start, struct timeval end);
 void	print_log(t_philo *philo, char *state);
 void	break_usleep(t_philo *philo, int time_ms);
