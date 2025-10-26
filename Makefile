@@ -22,7 +22,8 @@ SRCS		= philo.c \
 			  philo_routine.c \
 			  philo_monitor.c \
 			  philo_death.c \
-			  philo_cleanup.c
+			  philo_cleanup.c \
+			  philo_init.c
 
 OBJS		= $(SRCS:.c=.o)
 

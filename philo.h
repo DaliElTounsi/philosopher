@@ -67,6 +67,8 @@ void	break_usleep(t_philo *philo, int time_ms);
 int		start_simulation(t_table *table);
 void	cleanup(t_table *table);
 void	destroy_resources(t_table *table);
+void	cleanup_philos_partial(t_table *table, int count);
+void	cleanup_forks_full(t_table *table);
 void	take_forks(t_philo *philo);
 void	philo_eat(t_philo *philo);
 void	philo_sleep(t_philo *philo);
