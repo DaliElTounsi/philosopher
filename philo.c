@@ -6,7 +6,7 @@
 /*   By: mohchams <mohchams@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:10:43 by mohchams          #+#    #+#             */
-/*   Updated: 2025/10/13 00:00:00 by mohchams         ###   ########.fr       */
+/*   Updated: 2025/10/26 20:54:10 by mohchams         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,16 @@ int	main(int ac, char **av)
 	t_table	*table;
 
 	if (ac != 5 && ac != 6)
+	{
+		printf("invalid argument");
 		return (1);
+	}
 	table = malloc(sizeof(t_table));
 	if (!table)
 		return (error_exit(NULL, "Error: malloc failed\n"));
 	if (parse_args(table, ac, av) != 0)
 	{
+		printf("invalid argument");
 		free(table);
 		return (1);
 	}

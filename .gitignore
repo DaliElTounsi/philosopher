@@ -27,3 +27,11 @@ infile
 .vscode/
 .idea/
 *.code-workspace
+
+# Test files (gardés localement uniquement)
+test.sh
+test*.txt
+*_report.txt
+analyze_timing.py
+malloc_protection_summary.txt
+protection_checklist.txt
